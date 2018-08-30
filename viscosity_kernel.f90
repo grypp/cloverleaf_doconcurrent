@@ -47,11 +47,10 @@ CONTAINS
     REAL(KIND=8)  :: ugrad,vgrad,grad2,pgradx,pgrady,pgradx2,pgrady2,grad     &
       ,ygrad,pgrad,xgrad,div,strain2,limiter,dirx,diry
 
-    !$OMP PARALLEL
+    DO CONCURRENT(k=y_min:y_max, j=x_min:x_max) &
+        LOCAL(ugrad,vgrad,div,strain2,pgradx,pgrady,pgradx2,pgrady2,limiter,&
+              pgrad,xgrad,ygrad,grad,grad2,dirx,diry)
 
-    !$OMP DO PRIVATE(ugrad,vgrad,div,strain2,pgradx,pgrady,pgradx2,pgrady2,limiter,pgrad,xgrad,ygrad,grad,grad2,dirx,diry)
-    DO k=y_min,y_max
-      DO j=x_min,x_max
         ugrad=(xvel0(j+1,k  )+xvel0(j+1,k+1))-(xvel0(j  ,k  )+xvel0(j  ,k+1))
 
         vgrad=(yvel0(j  ,k+1)+yvel0(j+1,k+1))-(yvel0(j  ,k  )+yvel0(j+1,k  ))
@@ -88,11 +87,8 @@ CONTAINS
           viscosity(j,k)=2.0_8*density0(j,k)*grad2*limiter*limiter
         ENDIF
 
-      ENDDO
     ENDDO
-  !$OMP END DO
 
-  !$OMP END PARALLEL
 
   END SUBROUTINE viscosity_kernel
 

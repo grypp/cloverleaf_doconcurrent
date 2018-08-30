@@ -101,14 +101,11 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL DO PRIVATE(index)
-    DO k=y_min-depth,y_max+y_inc+depth
-      DO j=1,depth
+    DO CONCURRENT(k=y_min-depth:y_max+y_inc+depth, j=1:depth) &
+        LOCAL(index)
         index= buffer_offset + j+(k+depth-1)*depth
         field(x_min-j,k)=left_rcv_buffer(index)
-      ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
 
   END SUBROUTINE clover_unpack_message_left
 
@@ -147,14 +144,11 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL DO PRIVATE(index)
-    DO k=y_min-depth,y_max+y_inc+depth
-      DO j=1,depth
+    DO CONCURRENT(k=y_min-depth:y_max+y_inc+depth, j=1:depth) &
+        LOCAL(index)
         index= buffer_offset + j+(k+depth-1)*depth
         right_snd_buffer(index)=field(x_max+1-j,k)
-      ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
 
   END SUBROUTINE clover_pack_message_right
 
@@ -193,14 +187,11 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL DO PRIVATE(index)
-    DO k=y_min-depth,y_max+y_inc+depth
-      DO j=1,depth
+    DO CONCURRENT(k=y_min-depth:y_max+y_inc+depth, j=1:depth)&
+      LOCAL(index)
         index= buffer_offset + j+(k+depth-1)*depth
         field(x_max+x_inc+j,k)=right_rcv_buffer(index)
-      ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
 
   END SUBROUTINE clover_unpack_message_right
 
@@ -240,12 +231,11 @@ CONTAINS
     ENDIF
 
     DO k=1,depth
-      !$OMP PARALLEL DO PRIVATE(index)
-      DO j=x_min-depth,x_max+x_inc+depth
+      DO CONCURRENT(j=x_min-depth:x_max+x_inc+depth) &
+        LOCAL(index)
         index= buffer_offset + k+(j+depth-1)*depth
         top_snd_buffer(index)=field(j,y_max+1-k)
       ENDDO
-    !$OMP END PARALLEL DO
     ENDDO
   
   END SUBROUTINE clover_pack_message_top
@@ -286,13 +276,12 @@ CONTAINS
     ENDIF
 
     DO k=1,depth
-      !$OMP PARALLEL DO PRIVATE(index)
-      DO j=x_min-depth,x_max+x_inc+depth
+      DO CONCURRENT(j=x_min-depth:x_max+x_inc+depth) &
+          LOCAL(index)
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j + depth+(k-1)*(x_max+x_inc+(2*depth))
         field(j,y_max+y_inc+k)=top_rcv_buffer(index)
       ENDDO
-    !$OMP END PARALLEL DO
     ENDDO
 
   END SUBROUTINE clover_unpack_message_top
@@ -333,13 +322,12 @@ CONTAINS
     ENDIF
 
     DO k=1,depth
-      !$OMP PARALLEL DO PRIVATE(index)
-      DO j=x_min-depth,x_max+x_inc+depth
+      DO CONCURRENT(j=x_min-depth:x_max+x_inc+depth) &
+          LOCAL(index)
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j+depth+(k-1)*(x_max+x_inc+(2*depth))
         bottom_snd_buffer(index)=field(j,y_min+y_inc-1+k)
       ENDDO
-    !$OMP END PARALLEL DO
     ENDDO
 
   END SUBROUTINE clover_pack_message_bottom
@@ -379,17 +367,14 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL
     DO k=1,depth
-      !$OMP DO PRIVATE(index)
-      DO j=x_min-depth,x_max+x_inc+depth
+      DO CONCURRENT(j=x_min-depth:x_max+x_inc+depth) &
+          LOCAL(index)
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j+depth+(k-1)*(x_max+x_inc+(2*depth))
         field(j,y_min-k)=bottom_rcv_buffer(index)
       ENDDO
-    !$OMP END DO
     ENDDO
-  !$OMP END PARALLEL
 
   END SUBROUTINE clover_unpack_message_bottom
 
