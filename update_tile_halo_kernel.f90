@@ -87,179 +87,115 @@ CONTAINS
     INTEGER :: j,k
 
 
-    !$OMP PARALLEL PRIVATE(j)
-
     ! Density 0
    
 
     IF(fields(FIELD_DENSITY0).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           density0(x_min-j,k)=left_density0(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! Density 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           density1(x_min-j,k)=left_density1(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
    
     ! Energy 0
     IF(fields(FIELD_ENERGY0).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           energy0(x_min-j,k)=left_energy0(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! Energy 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           energy1(x_min-j,k)=left_energy1(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
   
     ! Pressure
     IF(fields(FIELD_PRESSURE).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           pressure(x_min-j,k)=left_pressure(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! Viscocity
     IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           viscosity(x_min-j,k)=left_viscosity(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! Soundspeed
     IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           soundspeed(x_min-j,k)=left_soundspeed(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
 
     ! XVEL 0
     IF(fields(FIELD_XVEL0).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+1+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+1+depth, j=1:depth)
           xvel0(x_min-j,k)=left_xvel0(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! XVEL 1
     IF(fields(FIELD_XVEL1).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+1+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+1+depth, j=1:depth)
           xvel1(x_min-j,k)=left_xvel1(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! YVEL 0
     IF(fields(FIELD_YVEL0).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+1+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+1+depth, j=1:depth)
           yvel0(x_min-j,k)=left_yvel0(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! YVEL 1
     IF(fields(FIELD_YVEL1).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+1+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+1+depth, j=1:depth)
           yvel1(x_min-j,k)=left_yvel1(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! VOL_FLUX_X
     IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           vol_flux_x(x_min-j,k)=left_vol_flux_x(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! MASS_FLUX_X
     IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+depth, j=1:depth)
           mass_flux_x(x_min-j,k)=left_mass_flux_x(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! VOL_FLUX_Y
     IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+1+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+1+depth, j=1:depth)
           vol_flux_y(x_min-j,k)=left_vol_flux_y(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
 
     ! MASS_FLUX_Y
     IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-      !$OMP DO
-      DO k=y_min-depth,y_max+1+depth
-        DO j=1,depth
+      DO CONCURRENT(k=y_min-depth:y_max+1+depth, j=1:depth)
           mass_flux_y(x_min-j,k)=left_mass_flux_y(left_xmax+1-j,k)
-        ENDDO
       ENDDO
-    !$OMP END DO
     ENDIF
-
-  !$OMP END PARALLEL
 
   END SUBROUTINE update_tile_halo_l_kernel
 

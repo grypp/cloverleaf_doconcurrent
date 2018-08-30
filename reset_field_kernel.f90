@@ -44,26 +44,15 @@ CONTAINS
 
     INTEGER :: j,k
 
-    !$OMP PARALLEL
-    !$OMP DO
-    DO k=y_min,y_max
-      DO j=x_min,x_max
+    DO CONCURRENT(k=y_min:y_max, j=x_min:x_max)
         density0(j,k)=density1(j,k)
         energy0(j,k)=energy1(j,k)
-      ENDDO
     ENDDO
-    !$OMP END DO
 
-    !$OMP DO
-    DO k=y_min,y_max+1
-      DO j=x_min,x_max+1
+    DO CONCURRENT(k=y_min:y_max+1, j=x_min:x_max+1)
         xvel0(j,k)=xvel1(j,k)
         yvel0(j,k)=yvel1(j,k)
-      ENDDO
     ENDDO
-  !$OMP END DO
-
-  !$OMP END PARALLEL
 
   END SUBROUTINE reset_field_kernel
 

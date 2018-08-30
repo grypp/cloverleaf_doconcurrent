@@ -38,18 +38,10 @@ CONTAINS
 
     INTEGER :: j,k
 
-    !$OMP PARALLEL
-
-    !$OMP DO
-    DO k=y_min,y_max
-      DO j=x_min,x_max
+    DO CONCURRENT(k=y_min:y_max, j=x_min:x_max)
         density1(j,k)=density0(j,k)
         energy1(j,k)=energy0(j,k)
-      ENDDO
     ENDDO
-  !$OMP END DO
-
-  !$OMP END PARALLEL
 
   END SUBROUTINE revert_kernel
 
