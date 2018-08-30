@@ -82,35 +82,18 @@ CONTAINS
 
     ! State 1 is always the background state
 
-    !$OMP PARALLEL SHARED(x_cent,y_cent)
-    !$OMP DO
-    DO k=y_min-2,y_max+2
-      DO j=x_min-2,x_max+2
+    DO CONCURRENT(k=y_min-2:y_max+2, j=x_min-2:x_max+2)
         energy0(j,k)=state_energy(1)
-      ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
-    DO k=y_min-2,y_max+2
-      DO j=x_min-2,x_max+2
+    DO CONCURRENT(k=y_min-2:y_max+2, j=x_min-2:x_max+2)
         density0(j,k)=state_density(1)
-      ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
-    DO k=y_min-2,y_max+2
-      DO j=x_min-2,x_max+2
+    DO CONCURRENT(k=y_min-2:y_max+2, j=x_min-2:x_max+2)
         xvel0(j,k)=state_xvel(1)
-      ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
-    DO k=y_min-2,y_max+2
-      DO j=x_min-2,x_max+2
+    DO CONCURRENT(k=y_min-2:y_max+2, j=x_min-2:x_max+2)
         yvel0(j,k)=state_yvel(1)
-      ENDDO
     ENDDO
-    !$OMP END DO
 
     DO state=2,number_of_states
 
@@ -118,9 +101,9 @@ CONTAINS
       x_cent=state_xmin(state)
       y_cent=state_ymin(state)
 
-      !$OMP DO PRIVATE(radius,jt,kt)
-      DO k=y_min-2,y_max+2
-        DO j=x_min-2,x_max+2
+      DO CONCURRENT(k=y_min-2:y_max+2, j=x_min-2:x_max+2) &
+          LOCAL(radius,jt,kt)
+
           IF(state_geometry(state).EQ.g_rect ) THEN
             IF(vertexx(j+1).GE.state_xmin(state).AND.vertexx(j).LT.state_xmax(state)) THEN
               IF(vertexy(k+1).GE.state_ymin(state).AND.vertexy(k).LT.state_ymax(state)) THEN
@@ -158,13 +141,9 @@ CONTAINS
               ENDDO
             ENDIF
           ENDIF
-        ENDDO
       ENDDO
-    !$OMP END DO
 
     ENDDO
-
-  !$OMP END PARALLEL
 
   END SUBROUTINE generate_chunk_kernel
 

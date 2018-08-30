@@ -58,14 +58,11 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL DO PRIVATE(index)
-    DO k=y_min-depth,y_max+y_inc+depth
-      DO j=1,depth
-        index= buffer_offset + j+(k+depth-1)*depth
+    DO CONCURRENT(k=y_min-depth:y_max+y_inc+depth, j=1:depth) &
+        LOCAL(index)
+        index = buffer_offset + j+(k+depth-1)*depth
         left_snd_buffer(index)=field(x_min+x_inc-1+j,k)
-      ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
 
   END SUBROUTINE clover_pack_message_left
 
