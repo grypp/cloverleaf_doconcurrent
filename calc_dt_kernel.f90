@@ -86,11 +86,7 @@ CONTAINS
     dt_min_val = g_big
     jk_control=1.1
 
-    !$OMP PARALLEL
-
-    !$OMP DO PRIVATE(dsx,dsy,cc,dv1,dv2,div,dtct,dtut,dtvt,dtdivt) REDUCTION(MIN : dt_min_val)
-    DO k=y_min,y_max
-      DO j=x_min,x_max
+    DO concurrent( k=y_min:y_max, j=x_min:x_max) local(dsx,dsy,cc,dv1,dv2,div,dtct,dtut,dtvt,dtdivt) !implicit REDUCTION(MIN:dt_min_val)
 
         dsx=celldx(j)
         dsy=celldy(k)
@@ -127,11 +123,7 @@ CONTAINS
 
         dt_min_val=MIN(dt_min_val,dtct,dtut,dtvt,dtdivt)
 
-      ENDDO
     ENDDO
-    !$OMP END DO
-
-    !$OMP END PARALLEL
 
     ! Extract the mimimum timestep information
     dtl_control=10.01*(jk_control-INT(jk_control))
